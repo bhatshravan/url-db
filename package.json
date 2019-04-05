@@ -1,0 +1,32 @@
+{
+  "name": "zeropost",
+  "version": "0.0.1",
+  "description": "Scalable post data reciever",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bhatshravan/ZeroPost.git"
+  },
+  "author": "Shravan Bhat / Bit Streak Web",
+  "license": "GNU AGPLv3",
+  "bugs": {
+    "url": "https://github.com/bhatshravan/ZeroPost/issues"
+  },
+  "homepage": "https://github.com/bhatshravan/ZeroPost#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "connect-mongo": "^2.0.3",
+    "cors": "^2.8.5",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "mongoose": "^5.4.22",
+    "morgan": "^1.9.1"
+  },
+  "scripts": {
+    "start": "nodemon index.js"
+  }
+}
