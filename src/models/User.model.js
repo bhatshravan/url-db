@@ -1,15 +1,21 @@
 const db = require('../../db');
-const config = require('../../config');
 const bcrypt = require("bcrypt");
+const Schema = require('mongoose').Schema;
 
-var UserSchema = new db.schema({
+// db.users.createIndex( { "email": 1 }, { unique: true } )
+// db.dropDatabases
+// db.users.find().pretty()
+// db.users.remove({})
+
+var UserSchema = new Schema({
 	name: {
 		type: String,
 		required: true
 	},
 	email: {
 		type: String,
-		required: true
+		required: true,
+		unique: true
 	},
 	password: {
 		type: String,
@@ -65,4 +71,4 @@ UserSchema.pre("save", function (next) {
 });
 
 var User = db.model("User", UserSchema);
-module.exports = Users;
+module.exports = User;
