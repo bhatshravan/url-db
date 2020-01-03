@@ -1,29 +1,54 @@
-exports.sendJSON = (data, req, res) => {
-    res.status(200).json({
-        "success": true,
-        "data": data
-    });
+const db = require("../connect");
+
+//All resused functions
+exports.init = collection => {
+	const dbs = db.get();
+	const coll = dbs.collection(collection);
+	return coll;
 };
 
-exports.sendError = (sta, err, req, res) => {
-    res.status(sta).json({
-        "success": false,
-        "error": err
-    });
+exports.constOutputArr = (result, res) => {
+	result.toArray(function(err, docs) {
+		sendData(docs, res);
+	});
 };
 
-exports.sendSuccess = (req, res) => {
-    res.status(200).json({
-        "success": true
-    });
+const sendData = (data, res) => {
+	res.status(200).send(data);
 };
 
-exports.sendFail = (req, res) => {
-    res.status(500).json({
-        "success": false
-    });
+exports.sendData = sendData;
+
+exports.sendDataJSON = (data, res) => {
+	res.status(200).json(data);
 };
 
-exports.logs = (data) => {
-    console.log('[]' + data);
+exports.sendSuccessData = (data, res) => {
+	res.status(200).json({
+		success: true,
+		data: data
+	});
+};
+
+exports.sendError = (status, err, res) => {
+	res.status(status).json({
+		success: false,
+		error: err
+	});
+};
+
+exports.sendSuccess = res => {
+	res.status(200).json({
+		success: true
+	});
+};
+
+exports.sendFail = res => {
+	res.status(500).json({
+		success: false
+	});
+};
+
+exports.logs = data => {
+	console.log("[]" + data);
 };
