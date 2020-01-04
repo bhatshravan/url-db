@@ -55,7 +55,7 @@ const updates = (req, res, input) => {
 				pArr.urlDbUpdate,
 				pArr.urlDbOptions,
 				(err, result) => {
-					sendResponse(err, result, res);
+					sendResponse(err, result.result, res);
 				}
 			);
 		}
@@ -107,9 +107,6 @@ const findOnes = (req, res, input) => {
 			);
 		}
 		if (input == "findOneAndUpdate") {
-			console.log("====================================");
-			console.log(input);
-			console.log("====================================");
 			collection.findOneAndUpdate({}, pArr.urlDbUpdate, pArr.urlDbOptions, (err, result) => {
 				sendResponse(err, result, res);
 			});

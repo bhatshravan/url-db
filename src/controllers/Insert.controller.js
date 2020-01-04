@@ -27,7 +27,6 @@ exports.insertOnePost = (req, res) => {
 	let pArr = req.body;
 
 	collection.insertOne(pArr, (err, result) => {
-		console.log(result.insertedCount);
 		if (err) {
 			fcns.sendError(500, err, res);
 		} else {
@@ -37,11 +36,39 @@ exports.insertOnePost = (req, res) => {
 };
 
 exports.insertPost = (req, res) => {
-	const collection = init(req.params.collection);
-	let pArr = req.body;
+	const collection = fcns.init(req.params.collection);
+	let pArr = {};
+	let options;
+	if (req.body.urlDbOptions === undefined) {
+		options = {};
+		pArr = req.body;
+	} else {
+		options = req.body.urlDbOptions;
+		pArr = req.body.urlDbData;
+	}
 
-	collection.insertMany(pArr, (err, result) => {
-		console.log(result.insertedCount);
+	collection.insertMany(pArr, options, (err, result) => {
+		if (err) {
+			fcns.sendError(500, err, res);
+		} else {
+			fcns.sendSuccessData(result.insertedCount, res);
+		}
+	});
+};
+
+exports.save = (req, res) => {
+	const collection = fcns.init(req.params.collection);
+	let pArr = {};
+	let options;
+	if (req.body.urlDbOptions === undefined) {
+		options = {};
+		pArr = req.body;
+	} else {
+		options = req.body.urlDbOptions;
+		pArr = req.body.urlDbData;
+	}
+
+	collection.save(pArr, options, (err, result) => {
 		if (err) {
 			fcns.sendError(500, err, res);
 		} else {

@@ -9,8 +9,9 @@ module.exports = app => {
 	app.post("/:collection/find/", FindCtl.findPost);
 
 	app.get("/:collection/insertOne/:id", InsertCtl.insertOneGet);
-	app.post("/:collection/insertOne/:id", InsertCtl.insertOnePost);
+	app.post("/:collection/insertOne", InsertCtl.insertOnePost);
 	app.post("/:collection/insert", InsertCtl.insertPost);
+	app.post("/:collection/save", InsertCtl.save);
 
 	app.post("/:collection/update", UpdateCtl.update);
 	app.post("/:collection/updateOne", UpdateCtl.updateOne);
