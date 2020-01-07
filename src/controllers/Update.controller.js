@@ -2,15 +2,21 @@ const fcns = require("../fcns");
 
 exports.findOneAndDelete = (req, res) => {
 	const collection = fcns.init(req.params.collection);
-	let pArr = req.body;
+	let pQuery = {};
+	let pOptions = req.body.urlDbOptions;
 
-	if (pArr.urlDbQuery === undefined) {
-		pArr.urlDbQuery = {};
+	if (pOptions === undefined) {
+		pOptions = {};
 	}
-	if (pArr.urlDbOptions === undefined) {
-		pArr.urlDbOptions = {};
+
+	if (req.body.urlDbQuery === undefined) {
+		pQuery = req.body != {} ? req.body : {};
+	} else {
+		pQuery = req.body.urlDbQuery;
 	}
-	collection.findOneAndDelete(pArr.urlDbQuery, pArr.urlDbOptions, (err, result) => {
+
+	console.log(pQuery);
+	collection.findOneAndDelete(pQuery, pOptions, (err, result) => {
 		sendResponse(err, result, res);
 	});
 };

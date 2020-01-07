@@ -20,6 +20,11 @@ module.exports = app => {
 	app.post("/:collection/findOneAndUpdate", UpdateCtl.findOneAndUpdate);
 	app.post("/:collection/findOneAndReplace", UpdateCtl.findOneAndReplace);
 
+	app.get("/:collection/deleteOne/:id", DeleteCtl.deleteOneGet);
+	app.get("/:collection/deleteMany/:id", DeleteCtl.deleteManyGet);
+	app.post("/:collection/deleteOne", DeleteCtl.deleteOne);
+	app.post("/:collection/deleteMany", DeleteCtl.deleteMany);
+
 	//Default test route
 	app.all("/test", (req, res) => {
 		res.status(200).json({

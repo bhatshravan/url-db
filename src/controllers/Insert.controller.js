@@ -13,7 +13,6 @@ exports.insertOneGet = (req, res) => {
 		pArr[p1] = p2;
 	});
 	collection.insertOne(pArr, (err, result) => {
-		console.log(result.insertedCount);
 		if (err) {
 			fcns.sendError(500, err, res);
 		} else {
@@ -28,7 +27,7 @@ exports.insertOnePost = (req, res) => {
 
 	collection.insertOne(pArr, (err, result) => {
 		if (err) {
-			fcns.sendError(500, err, res);
+			fcns.sendError(400, err, res);
 		} else {
 			fcns.sendSuccessData(result.insertedCount, res);
 		}
@@ -41,19 +40,24 @@ exports.insertPost = (req, res) => {
 	let options;
 	if (req.body.urlDbOptions === undefined) {
 		options = {};
-		pArr = req.body;
+		if (req.body.urlDbQuery === undefined) pArr = req.body;
+		else pArr = req.body.urlDbQuery;
 	} else {
 		options = req.body.urlDbOptions;
-		pArr = req.body.urlDbData;
+		pArr = req.body.urlDbQuery;
 	}
+	console.log();
+	if (pArr === undefined) fcns.sendError(400, "urlDbQuery not sent", res);
+	else {
 
-	collection.insertMany(pArr, options, (err, result) => {
-		if (err) {
-			fcns.sendError(500, err, res);
-		} else {
-			fcns.sendSuccessData(result.insertedCount, res);
-		}
-	});
+		collection.insertMany(pArr, options, (err, result) => {
+			if (err) {
+				fcns.sendError(400, err, res);
+			} else {
+				fcns.sendSuccessData(result.insertedCount, res);
+			}
+		});
+	}
 };
 
 exports.save = (req, res) => {
@@ -62,15 +66,16 @@ exports.save = (req, res) => {
 	let options;
 	if (req.body.urlDbOptions === undefined) {
 		options = {};
-		pArr = req.body;
+		if (req.body.urlDbQuery === undefined) pArr = req.body;
+		else pArr = req.body.urlDbQuery;
 	} else {
 		options = req.body.urlDbOptions;
-		pArr = req.body.urlDbData;
+		pArr = req.body.urlDbQuery;
 	}
 
 	collection.save(pArr, options, (err, result) => {
 		if (err) {
-			fcns.sendError(500, err, res);
+			fcns.sendError(402, err, res);
 		} else {
 			fcns.sendSuccessData(result.insertedCount, res);
 		}

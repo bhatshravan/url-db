@@ -1,6 +1,5 @@
 const ObjectId = require("mongodb").ObjectId;
 const fcns = require("../fcns");
-const db = require("../../connect");
 const Entities = require("html-entities").AllHtmlEntities;
 const entities = new Entities();
 
@@ -11,68 +10,65 @@ exports.findAll = (req, res) => {
 };
 
 exports.findGet = (req, res) => {
-	const collection = fcns.init(req.params.collection);
-	let pArr = {};
+	let pArr = {},
+		pArgs = {};
 
 	const params = entities.decode(req.params.id).split("&");
 
 	params.map(ele => {
 		let pSplit = ele.split("=");
-		let p1 = pSplit[0];
-		let p2 = pSplit[1];
-		pArr[p1] = p2;
+		pArr[pSplit[0]] = p2;
 	});
 	pArr = changeVal(pArr);
-	checkLimitSkip(collection, pArr, res);
+
+	pArgs.urlDbN = pArr.urlDbN === undefined ? 0 : Number(pArr.urlDbN);
+	pArgs.urlDbSkip = pArr.urlDbSkip === undefined ? 0 : Number(pArr.urlDbSkip);
+	pArgs.urlDbSort = {};
+
+	if (pArr.urlDbSort != undefined) {
+		let pSplit = pArr.urlDbSort;
+		pSplit = pSplit.split(",");
+		pSplit.map(ele => {
+			let pSplit2 = ele.split(":");
+			try {
+				pArgs.urlDbSort[pSplit2[0]] = Number(pSplit2[1]);
+			} catch (err) {
+				pArgs.urlDbSort[pSplit2[0]] = pSplit2[1];
+			}
+		});
+	}
+	checkLimitSkip(pArr, pArgs, req, res);
 };
 
 exports.findPost = (req, res) => {
-	const collection = fcns.init(req.params.collection);
-	let pArr = {};
-	if (req.body.urlDbData === undefined) {
-		pArr = req.body;
-	} else {
-		pArr = req.body.urlDbData;
-	}
+	let pArr = {},
+		pArgs = {};
 
 	pArr = changeVal(pArr);
 
-	if (req.body.urlDbN != undefined) {
-		pArr.urlDbN = req.body.urlDbN;
-	}
-	if (req.body.urlDbSkip != undefined) {
-		pArr.urlDbSkip = req.body.urlDbSkip;
-	}
-	console.log(pArr);
-	checkLimitSkip(collection, pArr, res);
+	pArr = req.body.urlDbData === undefined ? req.body : req.body.urlDbData;
+
+	pArgs.urlDbN = req.body.urlDbN === undefined ? 0 : Number(req.body.urlDbN);
+	pArgs.urlDbSkip = req.body.urlDbSkip === undefined ? 0 : Number(req.body.urlDbSkip);
+	pArgs.urlDbSort = req.body.urlDbSort === undefined ? {} : req.body.urlDbSort;
+
+	checkLimitSkip(pArr, pArgs, req, res);
 };
 
-const checkLimitSkip = (collection, pArr, res) => {
-	if (pArr.urlDbN === undefined) {
-		if (pArr.urlDbSkip === undefined) {
-			fcns.constOutputArr(collection.find(pArr), res);
-		} else {
-			const skip = Number(pArr.urlDbSkip);
-			delete pArr.urlDbSkip;
-			fcns.constOutputArr(collection.find(pArr).skip(skip), res);
-		}
-	} else {
-		const limit = Number(pArr.urlDbN);
-		delete pArr.urlDbN;
-		if (pArr.urlDbSkip === undefined) {
-			fcns.constOutputArr(collection.find(pArr).limit(limit), res);
-		} else {
-			const skip = Number(pArr.urlDbSkip);
-			delete pArr.urlDbSkip;
-			fcns.constOutputArr(
-				collection
-					.find(pArr)
-					.limit(limit)
-					.skip(skip),
-				res
-			);
-		}
-	}
+const checkLimitSkip = (pArr, pArgs, req, res) => {
+	const collection = fcns.init(req.params.collection);
+	delete pArr.urlDbSkip;
+	delete pArr.urlDbN;
+	delete pArr.urlDbSort;
+
+	fcns.constOutputArr(
+		collection
+			.find(pArr)
+			.limit(pArgs.urlDbN)
+			.skip(pArgs.urlDbSkip)
+			.sort(pArgs.urlDbSort),
+		res
+	);
 };
 
 function changeVal(data) {
